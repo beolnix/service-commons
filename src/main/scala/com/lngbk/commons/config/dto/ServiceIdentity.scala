@@ -1,6 +1,5 @@
 package com.lngbk.commons.config.dto
 
-import com.lngbk.commons.config.dto.ServiceType.ServiceType
 import com.typesafe.config.ConfigFactory
 
 /**
@@ -15,13 +14,7 @@ object Tag extends Enumeration {
   val BusinessLogic = Value("BusinessLogic")
 }
 
-object ServiceType extends Enumeration {
-  type ServiceType = Value
-  val ACTOR = Value("ACTOR")
-  val REST = Value("REST")
-}
-
-case class ServiceIdentity(serviceId: String, serviceAkkaPort: Int, serviceHTTPPort: Int, serviceType: ServiceType)
+case class ServiceIdentity(serviceId: String, serviceAkkaPort: Int, serviceHTTPPort: Int, serviceType: String)
 
 object ServiceIdentity {
   val readFromConfig = {
@@ -29,10 +22,7 @@ object ServiceIdentity {
     val serviceAkkaPort = config.getInt("service.akka.port")
     val serviceHttpPort = config.getInt("service.akka.port")
     val serviceId = config.getString("service.id")
-    val serviceType = config.getString("service.type") match {
-      case "ACTOR" => ServiceType.ACTOR
-      case "REST" => ServiceType.REST
-    }
+    val serviceType = config.getString("service.type")
 
     ServiceIdentity(serviceId, serviceAkkaPort, serviceHttpPort, serviceType)
   }
