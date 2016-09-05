@@ -21,7 +21,8 @@ object ConfigClient {
       logger.info("id: " + serviceHealth.getService.getId + "; " +
         "service: " + serviceHealth.getService.getService + "; " +
         "address: " + serviceHealth.getService.getAddress + "; " +
-        "port: " + serviceHealth.getService.getPort + "; ")
+        "port: " + serviceHealth.getService.getPort + "; " +
+        "nodeAddress: " + serviceHealth.getNode.getAddress)
     })
   }
 

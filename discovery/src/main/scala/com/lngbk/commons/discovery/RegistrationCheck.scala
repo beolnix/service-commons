@@ -12,7 +12,7 @@ object RegistrationCheck {
   import ConsulClient.lngbkConsul
 
   // constants
-  private val CHECK_INTERVAL = 2 * 1000 // service registration check interval in ms
+  private val CHECK_INTERVAL = 1 * 1000 // service registration check interval in ms
   private val logger = LoggerFactory.getLogger(RegistrationCheck.getClass)
 
   // dependencies
