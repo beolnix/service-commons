@@ -3,7 +3,7 @@ package com.lngbk.commons.discovery
 import java.util.concurrent.atomic.AtomicBoolean
 
 import com.google.common.net.HostAndPort
-import com.lngbk.commons.config.dto.ServiceIdentity
+import com.lngbk.commons.config.ServiceIdentity
 import org.slf4j.LoggerFactory
 
 

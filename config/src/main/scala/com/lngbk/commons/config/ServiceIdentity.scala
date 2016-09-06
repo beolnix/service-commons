@@ -1,4 +1,4 @@
-package com.lngbk.commons.config.dto
+package com.lngbk.commons.config
 
 import com.typesafe.config.ConfigFactory
 
