@@ -1,4 +1,4 @@
-package com.lngbk.commons.discovery
+package com.lngbk.commons.discovery.consul
 
 import java.util.concurrent.atomic.AtomicBoolean
 
