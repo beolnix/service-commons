@@ -1,13 +1,16 @@
 package com.lngbk.commons.discovery.consul
 
+import akka.actor.Address
 import com.google.common.net.HostAndPort
 import com.lngbk.commons.config.ServiceIdentity
 import com.lngbk.commons.discovery.dto.LngbkAddress
+import com.orbitz.consul.model.health.ServiceHealth
 import com.orbitz.consul.{AgentClient, Consul}
 import com.typesafe.config.ConfigFactory
 import org.slf4j.LoggerFactory
 
 import collection.JavaConversions._
+import scala.collection.immutable.HashSet
 
 
 
@@ -46,13 +49,15 @@ object ConsulClient {
     RegistrationCheck.startPeriodicalRegistrationUpdate()
   }
 
-  def getServiceAddresses(serviceName: String) =
+  def getServiceAddresses(serviceName: String): Set[Address] =
     healthClient.getHealthyServiceInstances(serviceName).getResponse
-      .map(serviceHealth => {
-        LngbkAddress(
+      .map(serviceHealth =>
+        Address(
+          "akka.tcp",
+          "LngbkSystem",
           serviceHealth.getNode.getAddress,
-          serviceHealth.getService.getPort,
-          serviceName)
-      })
+          serviceHealth.getService.getPort
+        )
+      ).to[HashSet[Address]]
 
 }
