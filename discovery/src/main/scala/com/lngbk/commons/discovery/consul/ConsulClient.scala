@@ -28,7 +28,6 @@ object ConsulClient {
   private val config = ConfigFactory.load()
   private val CONSUL_IP = config.getString("consul.agent.ip")
   private val CONSUL_PORT = config.getInt("consul.agent.port")
-  private val INTERFACE = config.getString("service.interface.ip")
 
   private val consul: Consul = Consul.builder()
       .withHostAndPort(HostAndPort.fromParts(CONSUL_IP, CONSUL_PORT))
@@ -41,7 +40,7 @@ object ConsulClient {
   def register() = {
     _lngbkConsul.register(
       serviceIdentity.serviceAkkaPort,
-      HostAndPort.fromParts(INTERFACE, serviceIdentity.serviceAkkaPort),
+      HostAndPort.fromParts(serviceIdentity.serviceIp, serviceIdentity.serviceAkkaPort),
       SERVICE_REGISTRATION_TTL,
       serviceIdentity.serviceType.toString,
       serviceIdentity.serviceId); // registers with a TTL of 3 seconds

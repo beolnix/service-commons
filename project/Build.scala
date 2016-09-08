@@ -56,7 +56,8 @@ object MyBuild extends Build {
       licenses := Seq(("CC0", url("http://creativecommons.org/publicdomain/zero/1.0")))
 
 
-    ).dependsOn(config)
+    ).configs(MultiJvm)
+    .dependsOn(config)
 
   lazy val management = project
     .settings(

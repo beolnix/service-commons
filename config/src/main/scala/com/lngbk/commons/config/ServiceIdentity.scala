@@ -14,16 +14,17 @@ object Tag extends Enumeration {
   val BusinessLogic = Value("BusinessLogic")
 }
 
-case class ServiceIdentity(serviceId: String, serviceAkkaPort: Int, serviceHTTPPort: Int, serviceType: String)
+case class ServiceIdentity(serviceId: String, serviceAkkaPort: Int, serviceHTTPPort: Int, serviceType: String, serviceIp: String)
 
 object ServiceIdentity {
   val readFromConfig = {
     val config = ConfigFactory.load()
     val serviceAkkaPort = config.getInt("service.akka.port")
-    val serviceHttpPort = config.getInt("service.akka.port")
+    val serviceHttpPort = config.getInt("service.http.port")
     val serviceId = config.getString("service.id")
     val serviceType = config.getString("service.type")
+    val serviceIp = config.getString("service.ip")
 
-    ServiceIdentity(serviceId, serviceAkkaPort, serviceHttpPort, serviceType)
+    ServiceIdentity(serviceId, serviceAkkaPort, serviceHttpPort, serviceType, serviceIp)
   }
 }

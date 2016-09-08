@@ -1,0 +1,1 @@
+-Dconsul.agent.ip=127.0.0.1 -Dconsul.agent.port=5400 -Dservice.ip=127.0.0.1 -Dservice.type=ProducerService -Dservice.id=test -Dservice.akka.port=9001
