@@ -22,6 +22,7 @@ class DiscoverySmokeTestMultiJvmProducerNode1 extends WordSpec with MustMatchers
         count += 1
       } while (addresses.size < 1 && count < 5)
       RegistrationCheck.failRegistration()
+      
 
       addresses must not be empty
       println(s"addresses: $addresses ; got in $count attempts" )
