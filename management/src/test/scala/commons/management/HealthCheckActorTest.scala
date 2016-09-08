@@ -1,8 +1,9 @@
-package com.lngbk.commons.management
+package commons.management
 
 import akka.actor.ActorSystem
 import akka.testkit.{DefaultTimeout, ImplicitSender, TestKit}
-import com.lngbk.commons.utils.StopSystemAfterAll
+import com.lngbk.commons.management.HealthCheckActor
+import commons.utils.StopSystemAfterAll
 import org.scalatest.{MustMatchers, WordSpecLike}
 
 /**
@@ -18,7 +19,7 @@ class HealthCheckActorTest extends TestKit(ActorSystem("testService"))
   "HealthCheckActor must" must {
 
     "Reply on ping msg with pong msg" in {
-      import HealthCheckActor._
+      import com.lngbk.commons.management.HealthCheckActor._
 
       val healthCheckActorRef = system.actorOf(HealthCheckActor.props)
       healthCheckActorRef ! Ping

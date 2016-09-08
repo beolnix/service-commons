@@ -33,18 +33,20 @@ object ConsulClient {
   private val consul: Consul = Consul.builder()
       .withHostAndPort(HostAndPort.fromParts(CONSUL_IP, CONSUL_PORT))
       .build()
-  private val lngbkConsul: AgentClient = consul.agentClient()
+  private val _lngbkConsul: AgentClient = consul.agentClient()
   private val healthClient = consul.healthClient()
 
+  def lngbkConsul = _lngbkConsul
+
   def register() = {
-    lngbkConsul.register(
+    _lngbkConsul.register(
       serviceIdentity.serviceAkkaPort,
       HostAndPort.fromParts(INTERFACE, serviceIdentity.serviceAkkaPort),
       SERVICE_REGISTRATION_TTL,
       serviceIdentity.serviceType.toString,
       serviceIdentity.serviceId); // registers with a TTL of 3 seconds
 
-    lngbkConsul.pass(serviceIdentity.serviceId)
+    _lngbkConsul.pass(serviceIdentity.serviceId)
 
     RegistrationCheck.startPeriodicalRegistrationUpdate()
   }
@@ -58,6 +60,6 @@ object ConsulClient {
           serviceHealth.getNode.getAddress,
           serviceHealth.getService.getPort
         )
-      ).to[HashSet[Address]]
+      ).to[HashSet]
 
 }
