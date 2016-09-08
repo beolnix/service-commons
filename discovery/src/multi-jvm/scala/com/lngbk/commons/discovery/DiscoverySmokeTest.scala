@@ -1,28 +1,52 @@
 package com.lngbk.commons.discovery
 
-import com.lngbk.commons.discovery.consul.ConsulClient
+import akka.actor.Address
+import com.lngbk.commons.discovery.consul.{ConsulClient, RegistrationCheck}
+import org.scalatest.WordSpec
+import org.scalatest.MustMatchers
 
 /**
   * Created by beolnix on 08/09/16.
   */
-object DiscoverySmokeTestMultiJvmProducerNode1 {
-  def main(args: Array[String]): Unit = {
-    ConsulClient.register()
-    while(true) {
-      val addresses = ConsulClient.getServiceAddresses("ConsumerService")
-      println("I see " + addresses.size + " consumer services: " + addresses)
-      Thread.sleep(1000)
+class DiscoverySmokeTestMultiJvmProducerNode1 extends WordSpec with MustMatchers {
+  "A producer node" should {
+
+    "Get adresses list of consumer node" in {
+      ConsulClient.register()
+
+      var count = 0;
+      var addresses: Set[Address] = Set[Address]()
+      do {
+        addresses = ConsulClient.getServiceAddresses("ConsumerService")
+        Thread.sleep(1000)
+        count += 1
+      } while (addresses.size < 1 && count < 5)
+      RegistrationCheck.failRegistration()
+
+      addresses must not be empty
+      println(s"addresses: $addresses ; got in $count attempts" )
     }
   }
 }
 
-object DiscoverySmokeTestMultiJvmConsumerNode2 {
-  def main(args: Array[String]): Unit = {
-    ConsulClient.register()
-    while(true) {
-      val addresses = ConsulClient.getServiceAddresses("ProducerService")
-      println("I see " + addresses.size + " producer services: " + addresses)
-      Thread.sleep(1000)
+class DiscoverySmokeTestMultiJvmConsumerNode2 extends WordSpec with MustMatchers {
+  "A consumer node" should {
+    "Get adresses list of producer node" in {
+      ConsulClient.register()
+
+      var count = 0;
+      var addresses: Set[Address] = Set[Address]()
+      do {
+        addresses = ConsulClient.getServiceAddresses("ProducerService")
+        Thread.sleep(1000)
+        count += 1
+      } while (addresses.size < 1 && count < 5)
+      RegistrationCheck.failRegistration()
+
+      addresses must not be empty
+      println(s"addresses: $addresses ; got in $count attempts" )
     }
   }
 }
+
+

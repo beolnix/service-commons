@@ -59,6 +59,6 @@ object ConsulClient {
           serviceHealth.getNode.getAddress,
           serviceHealth.getService.getPort
         )
-      ).to[HashSet]
+      ).to[Set]
 
 }

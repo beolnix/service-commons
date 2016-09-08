@@ -21,9 +21,9 @@ object ServiceIdentity {
     val config = ConfigFactory.load()
     val serviceAkkaPort = config.getInt("service.akka.port")
     val serviceHttpPort = config.getInt("service.http.port")
-    val serviceId = config.getString("service.id")
     val serviceType = config.getString("service.type")
     val serviceIp = config.getString("service.ip")
+    val serviceId = s"$serviceType@$serviceIp:$serviceAkkaPort"
 
     ServiceIdentity(serviceId, serviceAkkaPort, serviceHttpPort, serviceType, serviceIp)
   }
