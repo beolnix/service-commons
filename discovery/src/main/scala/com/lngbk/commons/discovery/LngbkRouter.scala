@@ -55,8 +55,7 @@ class LngbkRouter(val serviceName: String, val system: ActorSystem, val api: Pro
 
   def !(that: Object) = _remote ! that
 
-//  import akka.pattern.ask
-//  def ask(that:Object) = _remote.ask(that)
+  def isReady: Boolean = _services.nonEmpty
 
 }
 
