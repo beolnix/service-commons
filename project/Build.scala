@@ -71,7 +71,7 @@ object MyBuild extends Build {
         "com.typesafe.akka" %% "akka-testkit" % akkaVersion % "test",
         "org.scalatest" %% "scalatest" % "2.2.6" % "test"
       )
-    )
+    ).dependsOn(discovery)
 
   lazy val versioning = project
     .settings(
