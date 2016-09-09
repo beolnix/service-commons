@@ -1,1 +1,1 @@
--Dconsul.agent.ip=127.0.0.1 -Dconsul.agent.port=8500 -Dservice.ip=127.0.0.1 -Dservice.type=ProducerService -Dservice.id=test1 -Dservice.akka.port=9000 -Dservice.http.port=9001
+-Dconsul.agent.ip=127.0.0.1 -Dconsul.agent.port=8500 -Dakka.remote.netty.tcp.hostname=127.0.0.1 -Dservice.type=ProducerService -Dservice.id=test1 -Dakka.remote.netty.tcp.port=9000 -Dservice.http.port=9001

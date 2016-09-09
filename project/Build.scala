@@ -16,9 +16,13 @@ object MyBuild extends Build {
 
   val akkaVersion = "2.4.10"
 
+  val organizationName = "com.lngbk"
+
   lazy val discovery = project
     .settings(SbtMultiJvm.multiJvmSettings: _*)
     .settings(
+      organization := organizationName,
+
       name := "discovery",
 
       version := projectVersion,
@@ -61,6 +65,10 @@ object MyBuild extends Build {
 
   lazy val management = project
     .settings(
+      organization := organizationName,
+
+      version := projectVersion,
+
       libraryDependencies ++= Seq(
         "com.orbitz.consul" % "consul-client" % "0.12.7",
 
@@ -75,6 +83,10 @@ object MyBuild extends Build {
 
   lazy val versioning = project
     .settings(
+      organization := organizationName,
+
+      version := projectVersion,
+
       libraryDependencies ++= Seq(
         "com.orbitz.consul" % "consul-client" % "0.12.7",
 
@@ -89,6 +101,10 @@ object MyBuild extends Build {
 
   lazy val config = project
     .settings(
+      organization := organizationName,
+
+      version := projectVersion,
+
       libraryDependencies ++= Seq(
         "com.orbitz.consul" % "consul-client" % "0.12.7",
 

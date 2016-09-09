@@ -19,10 +19,10 @@ case class ServiceIdentity(serviceId: String, serviceAkkaPort: Int, serviceHTTPP
 object ServiceIdentity {
   val readFromConfig = {
     val config = ConfigFactory.load()
-    val serviceAkkaPort = config.getInt("service.akka.port")
+    val serviceAkkaPort = config.getInt("akka.remote.netty.tcp.port")
     val serviceHttpPort = config.getInt("service.http.port")
     val serviceType = config.getString("service.type")
-    val serviceIp = config.getString("service.ip")
+    val serviceIp = config.getString("akka.remote.netty.tcp.hostname")
     val serviceId = s"$serviceType@$serviceIp:$serviceAkkaPort"
 
     ServiceIdentity(serviceId, serviceAkkaPort, serviceHttpPort, serviceType, serviceIp)
