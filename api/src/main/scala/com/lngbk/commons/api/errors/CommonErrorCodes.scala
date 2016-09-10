@@ -1,4 +1,4 @@
-package com.lngbk.commons.api
+package com.lngbk.commons.api.errors
 
 /**
   * Created by beolnix on 10/09/16.
