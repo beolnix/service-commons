@@ -14,6 +14,7 @@ object ServiceBootstrapDirector {
   private val DEPENDENCIES_CHECKS_LIMIT = 20
 
   def initService(waitForDependencies: Boolean = true, register: Boolean = true): Unit = {
+    import com.lngbk.api._
     if (waitForDependencies) {
       initDependencies()
     } else {

@@ -10,10 +10,11 @@ object MyBuild extends Build {
     management,
     versioning,
     config,
-    api
+    api,
+    service
   )
 
-  val projectVersion = "0.0.7-SNAPSHOT"
+  val projectVersion = "0.0.8-SNAPSHOT"
 
   val akkaVersion = "2.4.10"
 
@@ -119,6 +120,13 @@ object MyBuild extends Build {
     )
 
   lazy val api = project
+    .settings(
+      organization := organizationName,
+
+      version := projectVersion
+    ).dependsOn(management)
+
+  lazy val service = project
     .settings(
       organization := organizationName,
 
