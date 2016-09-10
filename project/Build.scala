@@ -9,10 +9,11 @@ object MyBuild extends Build {
     discovery,
     management,
     versioning,
-    config
+    config,
+    api
   )
 
-  val projectVersion = "0.0.1-SNAPSHOT"
+  val projectVersion = "0.0.4-SNAPSHOT"
 
   val akkaVersion = "2.4.10"
 
@@ -116,4 +117,11 @@ object MyBuild extends Build {
         "org.scalatest" %% "scalatest" % "2.2.6" % "test"
       )
     )
+
+  lazy val api = project
+    .settings(
+      organization := organizationName,
+
+      version := projectVersion
+    ).dependsOn(management)
 }
