@@ -15,17 +15,16 @@ import scala.language.postfixOps
 /**
   * Created by beolnix on 28/08/16.
   */
-class LngbkRouter(val serviceName: String, val system: ActorSystem, val api: Props) {
+class LngbkRouter(val serviceName: String, val system: ActorSystem, val api: Props, val poolSize: Int = 5) {
   import com.lngbk.commons.discovery.utils.DiscoveryUtils._
 
   // constants
   private val SERVICES_REFRESH_PERIOD = 1000L
-  private val ROUTER_POOL_SIZE = 1
 
   // state
   @volatile private var _services = ConsulClient.getServiceAddresses(serviceName)
   @volatile private var _remote = system.actorOf(
-    RemoteRouterConfig(RoundRobinPool(ROUTER_POOL_SIZE), _services).props(
+    RemoteRouterConfig(RoundRobinPool(poolSize), _services).props(
       api), s"$serviceName:pool")
 
   // state maintenance
@@ -34,7 +33,7 @@ class LngbkRouter(val serviceName: String, val system: ActorSystem, val api: Pro
 
     if (_services != newServices) {
       _remote = system.actorOf(
-        RemoteRouterConfig(RoundRobinPool(ROUTER_POOL_SIZE), newServices).props(
+        RemoteRouterConfig(RoundRobinPool(poolSize), newServices).props(
           Props()))
       _services = newServices
     }
@@ -60,6 +59,6 @@ class LngbkRouter(val serviceName: String, val system: ActorSystem, val api: Pro
 }
 
 object LngbkRouter {
-  def apply(serviceName: String, system: ActorSystem, api: Props) = new LngbkRouter(serviceName, system, api)
+  def apply(serviceName: String, system: ActorSystem, api: Props, poolSize: Int = 5) = new LngbkRouter(serviceName, system, api, poolSize)
 
 }

@@ -5,4 +5,5 @@ package com.lngbk.commons.api.errors
   */
 object CommonErrorCodes {
   val PIZDEC = "VERY_CRITICAL_ERROR"
+  val API_INCOMPATIBLE_VERSION = "API_INCOMPATIBLE_VERSION"
 }
