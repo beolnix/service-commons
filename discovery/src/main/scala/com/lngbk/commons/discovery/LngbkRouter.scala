@@ -25,7 +25,7 @@ class LngbkRouter(val serviceName: String, val system: ActorSystem, val api: Pro
   @volatile private var _services = ConsulClient.getServiceAddresses(serviceName)
   @volatile private var _remote = system.actorOf(
     RemoteRouterConfig(RoundRobinPool(poolSize), _services).props(
-      api), s"$serviceName:pool")
+      api), serviceName)
 
   // state maintenance
   private val update: () => Unit = () => {

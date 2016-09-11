@@ -30,8 +30,8 @@ object VersionHelper {
 
     val majorVer: Int = versionParts(0).toInt
     val minorVer: Int = versionParts(1).toInt
-    val hotfixVer: Int = versionParts(2).split("\\-")(0).toInt
+    val build: Int = versionParts(2).split("\\-")(0).toInt
 
-    VersionDTO(majorVer, minorVer, hotfixVer)
+    VersionDTO(majorVer, minorVer, build)
   }
 }

@@ -10,7 +10,7 @@ case class LngbkVersionRequest(
                                 requestUuid: String
                               ) extends LngbkRequest(requestUuid)
 
-case class VersionDTO(major: Int, minor: Int, hotfix: Int) extends Comparable[VersionDTO] {
+case class VersionDTO(major: Int, minor: Int, build: Int) extends Comparable[VersionDTO] {
   override def compareTo(o: VersionDTO): Int = {
     if (this.major < o.major) {
       -1
