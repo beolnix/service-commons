@@ -19,7 +19,7 @@ import scala.util.{Success, Try}
 /**
   * Created by beolnix on 10/09/16.
   */
-abstract class LngbkApi(val serviceName: String, poolSize: Int = 5)(implicit val sender: ActorRef) {
+abstract class LngbkApi(val serviceName: String, poolSize: Int = 5) {
 
   private val logger: Logger = LoggerFactory.getLogger(classOf[LngbkApi])
 
@@ -53,7 +53,7 @@ abstract class LngbkApi(val serviceName: String, poolSize: Int = 5)(implicit val
 
   private def checkVersion(): Unit = {
     val apiVersionDTO = VersionHelper.apiVersion(serviceName)
-    val response = router ? LngbkVersionRequest
+    val response = router ? LngbkVersionRequest("requestUuid")
     logger.info("Waiting for version response")
     val result: Option[Try[Any]] = Await.ready(response, Duration.Inf).value
     logger.info(s"Got version response: $result")
