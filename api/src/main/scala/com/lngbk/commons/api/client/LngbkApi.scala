@@ -53,13 +53,13 @@ abstract class LngbkApi(val serviceName: String, poolSize: Int = 5) {
 
   private def checkVersion(): Unit = {
     val apiVersionDTO = VersionHelper.apiVersion(serviceName)
-    val response = router ? LngbkVersionRequest("requestUuid")
+    val response = router ? LngbkVersionRequest()
     logger.info("Waiting for version response")
     val result: Option[Try[Any]] = Await.ready(response, Duration.Inf).value
     logger.info(s"Got version response: $result")
 
     result match {
-      case Some(Success(LngbkVersionResponse(minCompatible, current, errorCode))) => {
+      case Some(Success(LngbkVersionResponse(minCompatible, current))) => {
         if (apiVersionDTO.compareTo(minCompatible) == -1) {
           logger.error(s"Version of the API incompatible with version service. Api version: $apiVersionDTO; service version: $minCompatible")
           throw new ApiCriticalError(CommonErrorCodes.API_INCOMPATIBLE_VERSION)

@@ -17,14 +17,25 @@ object DependenciesManager {
   def checkIn(lngbkRouter: LngbkRouter): Unit = {
     logger.info(s"check-in new dependency $lngbkRouter")
     _dependencies += lngbkRouter
+    logger.info(s"dependencies list: ${_dependencies}")
   }
 
   def dependencies = _dependencies.toSet
 
   def areDependenciesReady(): Boolean = {
-    if (_dependencies.isEmpty)
+    if (_dependencies.isEmpty) {
+      logger.info("Dependencies are empty, readiness check failed.")
       false
-    else _dependencies.map(!_.isReady).isEmpty
+    } else {
+      val failedDeps = getFailedDependencies
+      if (failedDeps.isEmpty) {
+        logger.info(s"All dependencies are ready, readiness check passed: ${_dependencies}")
+        true
+      } else {
+        logger.info(s"There are failed deps. Dependency check failed: $failedDeps")
+        false
+      }
+    }
   }
 
   def getFailedDependencies: Set[LngbkRouter] = {

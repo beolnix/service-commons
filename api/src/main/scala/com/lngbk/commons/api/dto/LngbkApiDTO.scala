@@ -6,9 +6,7 @@ package com.lngbk.commons.api.dto
 class LngbkRequest(requestUuid: String)
 class LngbkResponse(errorCode: Option[String])
 
-case class LngbkVersionRequest(
-                                requestUuid: String
-                              ) extends LngbkRequest(requestUuid)
+case class LngbkVersionRequest()
 
 case class VersionDTO(major: Int, minor: Int, build: Int) extends Comparable[VersionDTO] {
   override def compareTo(o: VersionDTO): Int = {
@@ -26,7 +24,6 @@ case class VersionDTO(major: Int, minor: Int, build: Int) extends Comparable[Ver
 
 
 case class LngbkVersionResponse(
-                                minCompatible: VersionDTO,
-                                current: VersionDTO,
-                                errorCode: Option[String]
-                               ) extends LngbkResponse(errorCode)
+                                var minCompatible: VersionDTO,
+                                var current: VersionDTO
+                               )
