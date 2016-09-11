@@ -1,6 +1,6 @@
 package com.lngbk.commons.api.client
 
-import akka.actor.Props
+import akka.actor.{ActorPath, Props, RootActorPath}
 import akka.remote.ContainerFormats.ActorRef
 import com.lngbk.commons.api.dto.{LngbkVersionRequest, LngbkVersionResponse}
 import com.lngbk.commons.api.errors.{ApiCriticalError, CommonErrorCodes}
@@ -19,7 +19,7 @@ import scala.util.{Success, Try}
 /**
   * Created by beolnix on 10/09/16.
   */
-abstract class LngbkApi(val serviceName: String, poolSize: Int = 5) {
+abstract class LngbkApi(val serviceName: String, poolSize: Int = 5, actorPath: Option[ActorPath] = None) {
 
   private val logger: Logger = LoggerFactory.getLogger(classOf[LngbkApi])
 
@@ -41,7 +41,8 @@ abstract class LngbkApi(val serviceName: String, poolSize: Int = 5) {
       LngbkRouter(
         serviceName,
         SystemManager.system,
-        poolSize
+        poolSize,
+        actorPath
       )
     )
   }

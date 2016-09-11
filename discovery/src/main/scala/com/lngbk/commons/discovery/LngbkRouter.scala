@@ -3,7 +3,7 @@ package com.lngbk.commons.discovery
 import java.util
 import java.util.{Timer, TimerTask}
 
-import akka.actor.{Actor, ActorRef, ActorSystem, Address, AddressFromURIString, Props}
+import akka.actor.{Actor, ActorPath, ActorRef, ActorSystem, Address, AddressFromURIString, Props, RootActorPath}
 import akka.routing.{RoundRobinGroup, RoundRobinPool, Router}
 import com.lngbk.commons.discovery.consul.ConsulClient
 import akka.pattern.ask
@@ -16,7 +16,7 @@ import scala.language.postfixOps
 /**
   * Created by beolnix on 28/08/16.
   */
-class LngbkRouter(val serviceName: String, val system: ActorSystem, val poolSize: Int = 5) {
+class LngbkRouter(val serviceName: String, val system: ActorSystem, val poolSize: Int = 5, actorPath: Option[ActorPath] = None) {
 
   import com.lngbk.commons.discovery.utils.DiscoveryUtils._
 
@@ -26,9 +26,12 @@ class LngbkRouter(val serviceName: String, val system: ActorSystem, val poolSize
   // state
   @volatile private var _services = ConsulClient.getServiceAddresses(serviceName)
   @volatile private var _remote = {
-    if (_services.isEmpty)
+    if (_services.isEmpty && actorPath.isEmpty)
       Option.empty
-    else {
+    else if (actorPath.nonEmpty) {
+      val pathes = scala.collection.immutable.Iterable(actorPath.get.address.toString + "/user/" + serviceName)
+      Option(system.actorOf(RoundRobinGroup(pathes).props(), serviceName))
+    } else {
       val pathes = _services.map(address => address.toString + "/user/" + serviceName)
       Option(system.actorOf(RoundRobinGroup(pathes).props(), serviceName))
     }
@@ -74,6 +77,6 @@ class LngbkRouter(val serviceName: String, val system: ActorSystem, val poolSize
 }
 
 object LngbkRouter {
-  def apply(serviceName: String, system: ActorSystem, poolSize: Int = 5) = new LngbkRouter(serviceName, system, poolSize)
+  def apply(serviceName: String, system: ActorSystem, poolSize: Int = 5, actorPath: Option[ActorPath] = None) = new LngbkRouter(serviceName, system, poolSize, actorPath)
 
 }
