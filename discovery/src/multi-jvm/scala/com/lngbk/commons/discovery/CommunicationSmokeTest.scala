@@ -59,7 +59,9 @@ class CommunicationSmokeTestMultiJvmConsumerNode2 extends WordSpec with MustMatc
       val system = ActorSystem("LngbkSystem", config)
 
       implicit val timeout = Timeout(5 seconds)
-      val pingActor = system.actorOf(HealthCheckActor.props, "pingActor")
+      val pingActor = system.actorOf(HealthCheckActor.props, "ConsumerService")
+
+      println(s"GOT ACTOR $pingActor with path ${pingActor.path}")
 
       var count = 0
       while (count < 5) {

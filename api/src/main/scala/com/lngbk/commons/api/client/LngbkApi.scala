@@ -1,6 +1,7 @@
 package com.lngbk.commons.api.client
 
 import akka.actor.Props
+import akka.remote.ContainerFormats.ActorRef
 import com.lngbk.commons.api.dto.{LngbkVersionRequest, LngbkVersionResponse}
 import com.lngbk.commons.api.errors.{ApiCriticalError, CommonErrorCodes}
 import com.lngbk.commons.api.util.VersionHelper
@@ -10,12 +11,15 @@ import com.lngbk.commons.management.SystemManager
 import com.lngbk.commons.management.bootstrap.DependenciesManager
 import org.slf4j.{Logger, LoggerFactory}
 
+import scala.concurrent.Await
 import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.duration.Duration
+import scala.util.{Success, Try}
 
 /**
   * Created by beolnix on 10/09/16.
   */
-abstract class LngbkApi(val serviceName: String, apiProps: Props, poolSize: Int = 5) {
+abstract class LngbkApi(val serviceName: String, poolSize: Int = 5)(implicit val sender: ActorRef) {
 
   private val logger: Logger = LoggerFactory.getLogger(classOf[LngbkApi])
 
@@ -37,7 +41,6 @@ abstract class LngbkApi(val serviceName: String, apiProps: Props, poolSize: Int 
       LngbkRouter(
         serviceName,
         SystemManager.system,
-        apiProps,
         poolSize
       )
     )
@@ -50,9 +53,13 @@ abstract class LngbkApi(val serviceName: String, apiProps: Props, poolSize: Int 
 
   private def checkVersion(): Unit = {
     val apiVersionDTO = VersionHelper.apiVersion(serviceName)
-    val serviceVersionResponse = router ? LngbkVersionRequest
-    serviceVersionResponse.map {
-      case LngbkVersionResponse(minCompatible, current, errorCode) => {
+    val response = router ? LngbkVersionRequest
+    logger.info("Waiting for version response")
+    val result: Option[Try[Any]] = Await.ready(response, Duration.Inf).value
+    logger.info(s"Got version response: $result")
+
+    result match {
+      case Some(Success(LngbkVersionResponse(minCompatible, current, errorCode))) => {
         if (apiVersionDTO.compareTo(minCompatible) == -1) {
           logger.error(s"Version of the API incompatible with version service. Api version: $apiVersionDTO; service version: $minCompatible")
           throw new ApiCriticalError(CommonErrorCodes.API_INCOMPATIBLE_VERSION)
@@ -62,6 +69,7 @@ abstract class LngbkApi(val serviceName: String, apiProps: Props, poolSize: Int 
           logger.info(s"Version of the API is inline with service version. Api version: $apiVersionDTO; service version: $current")
         }
       }
+
       case _ => throw new ApiCriticalError(CommonErrorCodes.PIZDEC)
     }
   }
