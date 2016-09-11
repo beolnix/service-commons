@@ -7,7 +7,7 @@ import com.typesafe.config.ConfigFactory
   * Created by beolnix on 04/09/16.
   */
 object VersionHelper {
-  val serviceConfig = ConfigFactory.load("service-application.conf")
+  val serviceConfig = ConfigFactory.load("akka-application.conf")
 
   def apiVersion(serviceName: String): VersionDTO = {
     val apiConfig = ConfigFactory.load(s"$serviceName-api.conf")
