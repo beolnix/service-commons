@@ -5,8 +5,10 @@ import com.lngbk.commons.management.bootstrap.ServiceBootstrapDirector
 /**
   * Created by beolnix on 10/09/16.
   */
-class LngbkService(waitForDependencies: Boolean, register: Boolean) {
-  import com.lngbk.api._
+abstract class LngbkService(waitForDependencies: Boolean, register: Boolean) {
+
+  initDependencies()
   ServiceBootstrapDirector.initService(waitForDependencies, register)
 
+  def initDependencies(): Unit
 }

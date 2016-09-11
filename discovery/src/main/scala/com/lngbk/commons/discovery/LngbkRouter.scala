@@ -16,6 +16,7 @@ import scala.language.postfixOps
   * Created by beolnix on 28/08/16.
   */
 class LngbkRouter(val serviceName: String, val system: ActorSystem, val api: Props, val poolSize: Int = 5) {
+
   import com.lngbk.commons.discovery.utils.DiscoveryUtils._
 
   // constants
@@ -23,18 +24,29 @@ class LngbkRouter(val serviceName: String, val system: ActorSystem, val api: Pro
 
   // state
   @volatile private var _services = ConsulClient.getServiceAddresses(serviceName)
-  @volatile private var _remote = system.actorOf(
-    RemoteRouterConfig(RoundRobinPool(poolSize), _services).props(
-      api), serviceName)
+  @volatile private var _remote = {
+    if (_services.isEmpty)
+      Option.empty
+    else
+      Option(
+        system.actorOf(
+          RemoteRouterConfig(RoundRobinPool(poolSize), _services).props(
+            api), serviceName)
+      )
+  }
 
   // state maintenance
   private val update: () => Unit = () => {
     val newServices = ConsulClient.getServiceAddresses(serviceName)
 
-    if (_services != newServices) {
-      _remote = system.actorOf(
-        RemoteRouterConfig(RoundRobinPool(poolSize), newServices).props(
-          Props()))
+    if (_services != newServices && newServices.nonEmpty) {
+      _remote = Option(
+        system.actorOf(
+          RemoteRouterConfig(
+            RoundRobinPool(poolSize), newServices)
+            .props(Props())
+        )
+      )
       _services = newServices
     }
   }
@@ -50,9 +62,16 @@ class LngbkRouter(val serviceName: String, val system: ActorSystem, val api: Pro
   def remote = _remote
 
   implicit val timeout = Timeout(15 seconds)
-  def ?(that: Object) = _remote.ask(that)
 
-  def !(that: Object) = _remote ! that
+  def ?(that: Object) = _remote match {
+    case Some(value) => value.ask(that)
+    case None => throw new RuntimeException(s"router not defined for $serviceName")
+  }
+
+  def !(that: Object) = _remote match {
+    case Some(value) => value ! that
+    case None => throw new RuntimeException(s"router not defined for $serviceName")
+  }
 
   def isReady: Boolean = _services.nonEmpty
 
