@@ -2,8 +2,16 @@ package com.lngbk.commons.api.dto
 
 import java.util.UUID
 
-class LngbkRequest(requestUuid: String)
-class LngbkResponse(errorCode: Option[String])
+class LngbkRequest(requestUuid: String) {
+  def this() {
+    this(UUID.randomUUID().toString)
+  }
+}
+class LngbkResponse(errorCode: Option[String]) {
+  def this() {
+    this(None)
+  }
+}
 
 case class LngbkVersionRequest(requestUuid: String) extends LngbkRequest(requestUuid) {
   def this() {
@@ -35,4 +43,8 @@ case class LngbkVersionResponse(
                                 minCompatible: VersionDTO,
                                 current: VersionDTO,
                                 errorCode: Option[String]
-                               ) extends LngbkResponse(errorCode)
+                               ) extends LngbkResponse(errorCode) {
+  def this() {
+    this(null, null, None)
+  }
+}
