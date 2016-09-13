@@ -3,7 +3,7 @@ package com.lngbk.commons.api.client
 import akka.actor.{ActorPath, Props, RootActorPath}
 import akka.remote.ContainerFormats.ActorRef
 import com.lngbk.commons.api.dto.{LngbkVersionRequest, LngbkVersionResponse}
-import com.lngbk.commons.api.errors.{ApiCriticalError, CommonErrorCodes}
+import com.lngbk.commons.api.errors.{ApiCriticalError, ApiInitializationFailure, ApiVersionCheckFailure, CommonErrorCodes}
 import com.lngbk.commons.api.util.VersionHelper
 import com.lngbk.commons.config.ServiceIdentity
 import com.lngbk.commons.discovery.LngbkRouter
@@ -49,7 +49,7 @@ abstract class LngbkApi(val serviceName: String, poolSize: Int = 5, actorPath: O
 
   def router: LngbkRouter = _router match {
     case Some(value) => value
-    case None => throw new RuntimeException(s"LngbkApi $serviceName initializatino error")
+    case None => throw new ApiInitializationFailure(s"LngbkApi $serviceName initializatino error")
   }
 
   private def checkVersion(): Unit = {
@@ -71,7 +71,8 @@ abstract class LngbkApi(val serviceName: String, poolSize: Int = 5, actorPath: O
         }
       }
 
-      case _ => throw new ApiCriticalError(CommonErrorCodes.PIZDEC)
+      case error => throw new ApiVersionCheckFailure(s"Failed to check version of the $serviceName dependency. " +
+        s"Got a result $error")
     }
   }
 }

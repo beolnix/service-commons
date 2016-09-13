@@ -14,7 +14,7 @@ object MyBuild extends Build {
     service
   )
 
-  val projectVersion = "0.0.28-SNAPSHOT"
+  val projectVersion = "0.0.29-SNAPSHOT"
 
   val akkaVersion = "2.4.10"
 
