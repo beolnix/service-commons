@@ -56,6 +56,9 @@ abstract class LngbkApi(val serviceName: String, poolSize: Int = 5, actorPath: O
 
   private def checkVersion(): Unit = {
     val apiVersionDTO = VersionHelper.apiVersion(serviceName)
+
+    waitUntilReady(router)
+
     val response = router ? LngbkVersionRequest()
     logger.info("Waiting for version response")
     val result: Option[Try[Any]] = Await.ready(response, Duration.Inf).value
@@ -75,6 +78,13 @@ abstract class LngbkApi(val serviceName: String, poolSize: Int = 5, actorPath: O
 
       case error => throw new ApiVersionCheckFailure(s"Failed to check version of the $serviceName dependency. " +
         s"Got a result $error")
+    }
+  }
+
+  private def waitUntilReady(router: LngbkRouter): Unit = {
+    while(!router.isReady) {
+      logger.info(s"waiting for $serviceName router initialization...")
+      Thread.sleep(1000)
     }
   }
 }
