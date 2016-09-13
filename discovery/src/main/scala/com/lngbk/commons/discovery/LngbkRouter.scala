@@ -27,7 +27,7 @@ class LngbkRouter(val serviceName: String, val system: ActorSystem, val poolSize
   private val SERVICES_REFRESH_PERIOD = 1000L
 
   // state
-  @volatile private var _services = ConsulClient.getServiceAddresses(serviceName)
+  @volatile private var _services = Set[Address]()
   @volatile private var _remote = {
     if (_services.isEmpty && actorPath.isEmpty)
       Option.empty
