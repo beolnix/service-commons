@@ -1,10 +1,9 @@
 package com.lngbk.commons.discovery
 
-import java.util
-import java.util.{Timer, TimerTask}
+import java.util.Timer
 
-import akka.actor.{Actor, ActorPath, ActorRef, ActorSystem, Address, AddressFromURIString, Props, RootActorPath}
-import akka.routing.{RoundRobinGroup, RoundRobinPool, Router}
+import akka.actor.{Actor, ActorPath, ActorRef, ActorSystem, Address}
+import akka.routing.RoundRobinGroup
 import com.lngbk.commons.discovery.consul.ConsulClient
 import akka.pattern.ask
 import akka.util.Timeout
@@ -14,9 +13,11 @@ import scala.concurrent.duration
 import scala.concurrent.duration._
 import scala.language.postfixOps
 
-/**
-  * Created by beolnix on 28/08/16.
-  */
+object LngbkRouter {
+  def apply(serviceName: String, system: ActorSystem, poolSize: Int = 5, actorPath: Option[ActorPath] = None) = new LngbkRouter(serviceName, system, poolSize, actorPath)
+
+}
+
 class LngbkRouter(val serviceName: String, val system: ActorSystem, val poolSize: Int = 5, actorPath: Option[ActorPath] = None) {
 
   private val logger = LoggerFactory.getLogger(LngbkRouter.getClass)
@@ -55,12 +56,18 @@ class LngbkRouter(val serviceName: String, val system: ActorSystem, val poolSize
 
   }
 
-  private val periodicalServicesUpdater = new Timer()
-  periodicalServicesUpdater.schedule(
-    update,
-    0L,
-    SERVICES_REFRESH_PERIOD
-  )
+  private val periodicalServicesUpdater = new Timer
+  if (actorPath.isEmpty) {
+    logger.info(s"Actor path for $serviceName hasn't been passed, " +
+      s"start periodical check in service registry for updates.")
+    periodicalServicesUpdater.schedule(
+      update,
+      0L,
+      SERVICES_REFRESH_PERIOD
+    )
+  } else {
+    logger.info(s"Actor path has been provided as $actorPath. Skip service registry periodical check initialization.")
+  }
 
   // accessors and other interactions
   def remote = _remote
@@ -68,9 +75,7 @@ class LngbkRouter(val serviceName: String, val system: ActorSystem, val poolSize
   implicit val timeout = Timeout(15 seconds)
 
   def ?(that: Object)(implicit timeout: Timeout = Duration(40, duration.SECONDS), sender: ActorRef = Actor.noSender) = _remote match {
-    case Some(value) => {
-      value.ask(that)
-    }
+    case Some(value) => value ? that
     case None => throw new RuntimeException(s"router not defined for $serviceName")
   }
 
@@ -80,10 +85,5 @@ class LngbkRouter(val serviceName: String, val system: ActorSystem, val poolSize
   }
 
   def isReady: Boolean = _remote.nonEmpty
-
-}
-
-object LngbkRouter {
-  def apply(serviceName: String, system: ActorSystem, poolSize: Int = 5, actorPath: Option[ActorPath] = None) = new LngbkRouter(serviceName, system, poolSize, actorPath)
 
 }
