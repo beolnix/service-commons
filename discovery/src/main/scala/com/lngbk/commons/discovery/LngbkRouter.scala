@@ -46,8 +46,8 @@ class LngbkRouter(val serviceName: String, val system: ActorSystem, val poolSize
     val newServices = ConsulClient.getServiceAddresses(serviceName)
 
     if (_services != newServices && newServices.nonEmpty) {
-      logger.info(s"Got routes update for $serviceName service. Diff: ${_services.diff(newServices)}")
-      val pathes = _services.map(address => address.toString + "/authentication")
+      logger.info(s"Got routes update for $serviceName service. Diff: ${newServices.diff(_services)}")
+      val pathes = newServices.map(address => address.toString + "/user/" + serviceName)
       _remote = Option(system.actorOf(RoundRobinGroup(pathes).props(), serviceName))
       _services = newServices
     } else if (_services.isEmpty && newServices.isEmpty) {

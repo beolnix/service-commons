@@ -1,12 +1,20 @@
 package com.lngbk.commons.api.dto
 
-/**
-  * Created by beolnix on 10/09/16.
-  */
+import java.util.UUID
+
 class LngbkRequest(requestUuid: String)
 class LngbkResponse(errorCode: Option[String])
 
-case class LngbkVersionRequest()
+case class LngbkVersionRequest(requestUuid: String) extends LngbkRequest(requestUuid) {
+  def this() {
+    this(UUID.randomUUID().toString)
+  }
+}
+
+object LngbkVersionRequest {
+  def apply() = new LngbkVersionRequest()
+}
+
 
 case class VersionDTO(major: Int, minor: Int, build: Int) extends Comparable[VersionDTO] {
   override def compareTo(o: VersionDTO): Int = {
@@ -24,6 +32,7 @@ case class VersionDTO(major: Int, minor: Int, build: Int) extends Comparable[Ver
 
 
 case class LngbkVersionResponse(
-                                var minCompatible: VersionDTO,
-                                var current: VersionDTO
-                               )
+                                minCompatible: VersionDTO,
+                                current: VersionDTO,
+                                errorCode: Option[String]
+                               ) extends LngbkResponse(errorCode)

@@ -33,7 +33,9 @@ class CommunicationSmokeTestMultiJvmProducerNode1 extends WordSpec with MustMatc
       val system = ActorSystem("LngbkSystem", config)
 
       implicit val timeout = Timeout(5 seconds)
-      val router = LngbkRouter("ConsumerService", system, Props[HealthCheckActor])
+      val router = LngbkRouter("ConsumerService", system)
+      Thread.sleep(1500)
+
       val response: Future[Any] = router ? Ping
 
       val result = Await.result(response, timeout.duration)

@@ -12,9 +12,9 @@ abstract class LngbkActor extends Actor {
   private val logger: Logger = LoggerFactory.getLogger(classOf[LngbkActor])
 
   override def receive: Receive = {
-    case LngbkVersionRequest() => {
+    case LngbkVersionRequest(requestUuid) => {
       val response = LngbkVersionResponse(
-        VersionHelper.minCompatibleVersion, VersionHelper.currentVersion
+        VersionHelper.minCompatibleVersion, VersionHelper.currentVersion, None
       )
       logger.info(s"Got version request, send back: $response")
       sender() ! response

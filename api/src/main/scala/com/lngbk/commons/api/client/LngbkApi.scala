@@ -1,5 +1,7 @@
 package com.lngbk.commons.api.client
 
+import java.util.UUID
+
 import akka.actor.{ActorPath, Props, RootActorPath}
 import akka.remote.ContainerFormats.ActorRef
 import com.lngbk.commons.api.dto.{LngbkVersionRequest, LngbkVersionResponse}
@@ -60,7 +62,7 @@ abstract class LngbkApi(val serviceName: String, poolSize: Int = 5, actorPath: O
     logger.info(s"Got version response: $result")
 
     result match {
-      case Some(Success(LngbkVersionResponse(minCompatible, current))) => {
+      case Some(Success(LngbkVersionResponse(minCompatible, current, errorCode))) => {
         if (apiVersionDTO.compareTo(minCompatible) == -1) {
           logger.error(s"Version of the API incompatible with version service. Api version: $apiVersionDTO; service version: $minCompatible")
           throw new ApiCriticalError(CommonErrorCodes.API_INCOMPATIBLE_VERSION)
