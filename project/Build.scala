@@ -8,13 +8,12 @@ object MyBuild extends Build {
   lazy val root = project.in(file(".")).aggregate(
     discovery,
     management,
-    versioning,
     config,
     api,
     service
   )
 
-  val projectVersion = "0.0.35-SNAPSHOT"
+  val projectVersion = "0.0.36-SNAPSHOT"
 
   val akkaVersion = "2.4.10"
 
@@ -82,24 +81,6 @@ object MyBuild extends Build {
         "org.scalatest" %% "scalatest" % "2.2.6" % "test"
       )
     ).dependsOn(discovery)
-
-  lazy val versioning = project
-    .settings(
-      organization := organizationName,
-
-      version := projectVersion,
-
-      libraryDependencies ++= Seq(
-        "com.orbitz.consul" % "consul-client" % "0.12.7",
-
-        "com.typesafe.akka" %% "akka-actor" % akkaVersion,
-        "com.typesafe.akka" %% "akka-slf4j" % akkaVersion,
-        "ch.qos.logback" % "logback-classic" % "1.1.7",
-
-        "com.typesafe.akka" %% "akka-testkit" % akkaVersion % "test",
-        "org.scalatest" %% "scalatest" % "2.2.6" % "test"
-      )
-    )
 
   lazy val config = project
     .settings(
