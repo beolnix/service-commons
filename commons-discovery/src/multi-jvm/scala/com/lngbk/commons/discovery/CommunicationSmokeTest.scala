@@ -46,7 +46,7 @@ class CommunicationSmokeTestMultiJvmProducerNode1 extends WordSpec with MustMatc
       println(matchedResult)
 
       matchedResult must not be empty
-//      println(result)
+      //      println(result)
     }
 
   }

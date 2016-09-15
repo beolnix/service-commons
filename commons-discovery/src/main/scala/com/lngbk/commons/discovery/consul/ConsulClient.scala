@@ -42,7 +42,7 @@ object ConsulClient {
       serviceIdentity.serviceAkkaPort,
 //      HostAndPort.fromParts(serviceIdentity.serviceIp, serviceIdentity.serviceAkkaPort),
       SERVICE_REGISTRATION_TTL,
-      serviceIdentity.serviceType.toString,
+      serviceIdentity.serviceType,
       serviceIdentity.serviceId); // registers with a TTL of 3 seconds
 
     _lngbkConsul.pass(serviceIdentity.serviceId)

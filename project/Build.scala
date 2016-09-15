@@ -25,11 +25,16 @@ object MyBuild extends Build {
   val organizationName = "com.lngbk"
 
   lazy val discovery = project
+    .in(file("commons-discovery"))
     .settings(SbtMultiJvm.multiJvmSettings: _*)
     .settings(
       organization := organizationName,
 
-      name := "discovery",
+      name := "commons-discovery",
+
+      artifactName := { (sv: ScalaVersion, module: ModuleID, artifact: Artifact) =>
+        name.toString + "-" + module.revision + "." + artifact.extension
+      },
 
       version := projectVersion,
 
@@ -53,7 +58,7 @@ object MyBuild extends Build {
       // make sure that MultiJvm tests are executed by the default test target,
       // and combine the results from ordinary test and multi-jvm tests
       executeTests in Test <<= (executeTests in Test, executeTests in MultiJvm) map {
-        case (testResults, multiNodeResults)  =>
+        case (testResults, multiNodeResults) =>
           val overall =
             if (testResults.overall.id < multiNodeResults.overall.id)
               multiNodeResults.overall
@@ -70,8 +75,15 @@ object MyBuild extends Build {
     .dependsOn(config)
 
   lazy val management = project
+    .in(file("commons-management"))
     .settings(
       organization := organizationName,
+
+      name := "commons-management",
+
+      artifactName := { (sv: ScalaVersion, module: ModuleID, artifact: Artifact) =>
+        name.toString + "-" + module.revision + "." + artifact.extension
+      },
 
       version := projectVersion,
 
@@ -88,8 +100,15 @@ object MyBuild extends Build {
     ).dependsOn(discovery)
 
   lazy val datastore = project
+    .in(file("commons-datastore"))
     .settings(
       organization := organizationName,
+
+      name := "commons-datastore",
+
+      artifactName := { (sv: ScalaVersion, module: ModuleID, artifact: Artifact) =>
+        name.toString + "-" + module.revision + "." + artifact.extension
+      },
 
       version := projectVersion,
 
@@ -103,8 +122,15 @@ object MyBuild extends Build {
     ).dependsOn(discovery, config)
 
   lazy val config = project
+    .in(file("commons-config"))
     .settings(
       organization := organizationName,
+
+      name := "commons-config",
+
+      artifactName := { (sv: ScalaVersion, module: ModuleID, artifact: Artifact) =>
+        name.toString + "-" + module.revision + "." + artifact.extension
+      },
 
       version := projectVersion,
 
@@ -121,15 +147,29 @@ object MyBuild extends Build {
     )
 
   lazy val api = project
+    .in(file("commons-api"))
     .settings(
       organization := organizationName,
+
+      name := "commons-api",
+
+      artifactName := { (sv: ScalaVersion, module: ModuleID, artifact: Artifact) =>
+        name.toString + "-" + module.revision + "." + artifact.extension
+      },
 
       version := projectVersion
     ).dependsOn(management)
 
   lazy val service = project
+    .in(file("commons-service"))
     .settings(
       organization := organizationName,
+
+      name := "commons-service",
+
+      artifactName := { (sv: ScalaVersion, module: ModuleID, artifact: Artifact) =>
+        name.toString + "-" + module.revision + "." + artifact.extension
+      },
 
       version := projectVersion
     ).dependsOn(management)

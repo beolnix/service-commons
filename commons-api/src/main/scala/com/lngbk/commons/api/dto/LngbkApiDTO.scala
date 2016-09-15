@@ -2,9 +2,11 @@ package com.lngbk.commons.api.dto
 
 import java.util.UUID
 
-class LngbkRequest(requestUuid: String) {
+case class UserDTO(id: String, email: String, passwordHash: String, roles: Set[String], active: Boolean)
+
+class LngbkRequest(requestUuid: String, user: Option[UserDTO]) {
   def this() {
-    this(UUID.randomUUID().toString)
+    this(UUID.randomUUID().toString, Option.empty[UserDTO])
   }
 }
 class LngbkResponse(errorCode: Option[String]) {
@@ -13,9 +15,9 @@ class LngbkResponse(errorCode: Option[String]) {
   }
 }
 
-case class LngbkVersionRequest(requestUuid: String) extends LngbkRequest(requestUuid) {
+case class LngbkVersionRequest(requestUuid: String, user: Option[UserDTO]) extends LngbkRequest(requestUuid, user) {
   def this() {
-    this(UUID.randomUUID().toString)
+    this(UUID.randomUUID().toString, Option.empty[UserDTO])
   }
 }
 
