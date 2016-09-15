@@ -10,12 +10,17 @@ object MyBuild extends Build {
     management,
     config,
     api,
-    service
+    service,
+    datastore
   )
 
-  val projectVersion = "0.0.36-SNAPSHOT"
+  val projectVersion = "0.0.37-SNAPSHOT"
 
   val akkaVersion = "2.4.10"
+  val scalaTestVersion = "2.2.6"
+  val logbackVersion = "1.1.7"
+  val consulClientVersion = "0.12.7"
+  val reactiveMongoVersion = "0.11.14"
 
   val organizationName = "com.lngbk"
 
@@ -29,16 +34,16 @@ object MyBuild extends Build {
       version := projectVersion,
 
       libraryDependencies ++= Seq(
-        "com.orbitz.consul" % "consul-client" % "0.12.7",
+        "com.orbitz.consul" % "consul-client" % consulClientVersion,
 
         "com.typesafe.akka" %% "akka-actor" % akkaVersion,
         "com.typesafe.akka" %% "akka-remote" % akkaVersion,
         "com.typesafe.akka" %% "akka-slf4j" % akkaVersion,
         "com.typesafe.akka" %% "akka-multi-node-testkit" % akkaVersion,
-        "ch.qos.logback" % "logback-classic" % "1.1.7",
+        "ch.qos.logback" % "logback-classic" % logbackVersion,
 
         "com.typesafe.akka" %% "akka-testkit" % akkaVersion % "test",
-        "org.scalatest" %% "scalatest" % "2.2.6" % "test"
+        "org.scalatest" %% "scalatest" % scalaTestVersion % "test"
       ),
 
       // make sure that MultiJvm test are compiled by the default test compilation
@@ -71,16 +76,31 @@ object MyBuild extends Build {
       version := projectVersion,
 
       libraryDependencies ++= Seq(
-        "com.orbitz.consul" % "consul-client" % "0.12.7",
+        "com.orbitz.consul" % "consul-client" % consulClientVersion,
 
         "com.typesafe.akka" %% "akka-actor" % akkaVersion,
         "com.typesafe.akka" %% "akka-slf4j" % akkaVersion,
-        "ch.qos.logback" % "logback-classic" % "1.1.7",
+        "ch.qos.logback" % "logback-classic" % logbackVersion,
 
         "com.typesafe.akka" %% "akka-testkit" % akkaVersion % "test",
-        "org.scalatest" %% "scalatest" % "2.2.6" % "test"
+        "org.scalatest" %% "scalatest" % scalaTestVersion % "test"
       )
     ).dependsOn(discovery)
+
+  lazy val datastore = project
+    .settings(
+      organization := organizationName,
+
+      version := projectVersion,
+
+      libraryDependencies ++= Seq(
+        "org.reactivemongo" %% "reactivemongo" % reactiveMongoVersion,
+
+        "ch.qos.logback" % "logback-classic" % logbackVersion,
+
+        "org.scalatest" %% "scalatest" % scalaTestVersion % "test"
+      )
+    ).dependsOn(discovery, config)
 
   lazy val config = project
     .settings(
@@ -89,14 +109,14 @@ object MyBuild extends Build {
       version := projectVersion,
 
       libraryDependencies ++= Seq(
-        "com.orbitz.consul" % "consul-client" % "0.12.7",
+        "com.orbitz.consul" % "consul-client" % consulClientVersion,
 
         "com.typesafe.akka" %% "akka-actor" % akkaVersion,
         "com.typesafe.akka" %% "akka-slf4j" % akkaVersion,
-        "ch.qos.logback" % "logback-classic" % "1.1.7",
+        "ch.qos.logback" % "logback-classic" % logbackVersion,
 
         "com.typesafe.akka" %% "akka-testkit" % akkaVersion % "test",
-        "org.scalatest" %% "scalatest" % "2.2.6" % "test"
+        "org.scalatest" %% "scalatest" % scalaTestVersion % "test"
       )
     )
 
